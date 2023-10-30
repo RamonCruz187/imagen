@@ -1,0 +1,6 @@
+com\imagen\entity\Imagen.class
+com\imagen\service\ImagenServ.class
+com\imagen\controller\Controller.class
+com\imagen\ImagenApplication.class
+com\imagen\repository\imagenRepository.class
+com\imagen\service\imagenIServ.class
