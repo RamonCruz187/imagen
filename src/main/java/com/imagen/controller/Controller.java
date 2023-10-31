@@ -48,8 +48,8 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
         //produccion
        // String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
-        //Path rutaCarpetaImagenes = Paths.get("/var/www/html/images");
-        Path rutaCarpetaImagenes = Paths.get("C:/java");
+        Path rutaCarpetaImagenes = Paths.get("/var/www/html/images");
+        //Path rutaCarpetaImagenes = Paths.get("C:/java");
         
         
         // Guarda el archivo en la ruta especificada
