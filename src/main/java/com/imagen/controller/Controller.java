@@ -8,6 +8,9 @@ import com.imagen.entity.Imagen;
 import com.imagen.service.imagenIServ;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
@@ -30,6 +33,8 @@ public class Controller {
 public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         @RequestParam("file") MultipartFile file) {
     // Aquí puedes realizar validaciones o procesamientos adicionales antes de guardar el archivo
+    
+    
     try {
         // Genera un ID único para el archivo
         String fileId = UUID.randomUUID().toString();
@@ -40,17 +45,27 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         // Define la ruta relativa donde se guardará el archivo
         
         //local
-       // String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
+        String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
         //produccion
-        String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
+       // String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
+        //Path rutaCarpetaImagenes = Paths.get("/var/www/html/images");
+        Path rutaCarpetaImagenes = Paths.get("C:/java");
+        
         
         // Guarda el archivo en la ruta especificada
-        File dest = new File(filePath);
-        file.transferTo(dest);
+        
+        Path rutaImagen = rutaCarpetaImagenes.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), rutaImagen);
+            
+            String rutaa= rutaImagen.toString();
+        
+        
+        //File dest = new File(filePath);
+        //file.transferTo(dest);
         
         Imagen imagen = new Imagen();
         imagen.setId(id);
-        imagen.setNombre(filePath);
+        imagen.setNombre(rutaa);
         imaIServ.nuevaImagen(imagen);
         
         
