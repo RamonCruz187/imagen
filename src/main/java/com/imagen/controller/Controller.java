@@ -40,9 +40,9 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         // Define la ruta relativa donde se guardará el archivo
         
         //local
-        String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
+       // String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
         //produccion
-        //String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
+        String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
         
         // Guarda el archivo en la ruta especificada
         File dest = new File(filePath);
