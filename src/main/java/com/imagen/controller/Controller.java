@@ -44,12 +44,12 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         
         String newFileName= fileName + fileExtension;
         
-        File folder = new File("/var/www/html/picture/");
+        File folder = new File("/var/www/html/images/");
         if (!folder.exists()) {
             folder.mkdirs();
         }
         
-        Path path = Paths.get("/var/www/html/picture/"+ newFileName);
+        Path path = Paths.get("/var/www/html/images/"+ newFileName);
         String ruta= path.toString();
         
         Files.write(path, bytes);
