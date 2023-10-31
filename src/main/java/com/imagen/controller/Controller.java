@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,35 +36,28 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
     
     try {
         // Genera un ID único para el archivo
-        String fileId = UUID.randomUUID().toString();
+        String fileName = UUID.randomUUID().toString();
+        byte [] bytes = file.getBytes();
         
-        // Obtiene la extensión del archivo
-        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String fileOriginalName = file.getOriginalFilename();
+        String fileExtension = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
         
-        // Define la ruta relativa donde se guardará el archivo
+        String newFileName= fileName + fileExtension;
         
-        //local
-        String filePath = "C:/Java/Images/" + fileId + "." + fileExtension;
-        //produccion
-       // String filePath = "/var/www/html/images/" + fileId + "." + fileExtension;
-        Path rutaCarpetaImagenes = Paths.get("/var/www/html/images");
-        //Path rutaCarpetaImagenes = Paths.get("C:/java");
+        File folder = new File("/var/www/html/picture/");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
         
+        Path path = Paths.get("/var/www/html/picture/"+ newFileName);
+        String ruta= path.toString();
         
-        // Guarda el archivo en la ruta especificada
+        Files.write(path, bytes);
         
-        Path rutaImagen = rutaCarpetaImagenes.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), rutaImagen);
-            
-            String rutaa= rutaImagen.toString();
-        
-        
-        //File dest = new File(filePath);
-        //file.transferTo(dest);
         
         Imagen imagen = new Imagen();
         imagen.setId(id);
-        imagen.setNombre(rutaa);
+        imagen.setNombre(ruta);
         imaIServ.nuevaImagen(imagen);
         
         
@@ -74,7 +66,7 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
         
         return ResponseEntity.ok("Archivo guardado exitosamente");
     } catch (IOException e) {
-        e.printStackTrace();
+       
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el archivo");
     }
 }
