@@ -15,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+
+
 public class Controller {
+    
+    @Value("${image.storage.path}")
+    private String storagePath;
     
     @Autowired
     private imagenIServ imaIServ;
@@ -36,17 +42,29 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
     
     
     try {
+        String fileName = file.getOriginalFilename();
+        Path imagePath = Paths.get(storagePath + fileName);
+        String ruta = imagePath.toString();
         
-        // Obtén el nombre del archivo
-            String fileName = file.getOriginalFilename();
-            
-            // Define la ruta de destino para guardar la imagen
-            Path destination = Path.of("/var/www/html/images/" + fileName);
-            String ruta = destination.toString();
-            
-            // Guarda la imagen en el sistema de archivos
-            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+        File folder = new File("images/");
+        if (!folder.exists()) {
+            folder.mkdirs();
+       }
         
+        Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+        
+        
+        
+//        // Obtén el nombre del archivo
+//            String fileName = file.getOriginalFilename();
+//            
+//            // Define la ruta de destino para guardar la imagen
+//            Path destination = Path.of("C:/java/" + fileName);
+//            String ruta = destination.toString();
+//            
+//            // Guarda la imagen en el sistema de archivos
+//            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+//        
        
 //        String fileName = UUID.randomUUID().toString();
 //        byte [] bytes = file.getBytes();
