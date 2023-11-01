@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +36,35 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
     
     
     try {
-        // Genera un ID único para el archivo
-        String fileName = UUID.randomUUID().toString();
-        byte [] bytes = file.getBytes();
         
-        String fileOriginalName = file.getOriginalFilename();
-        String fileExtension = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
+        // Obtén el nombre del archivo
+            String fileName = file.getOriginalFilename();
+            
+            // Define la ruta de destino para guardar la imagen
+            Path destination = Path.of("/var/www/html/images/" + fileName);
+            String ruta = destination.toString();
+            
+            // Guarda la imagen en el sistema de archivos
+            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         
-        String newFileName= fileName + fileExtension;
-        
-        File folder = new File("/var/www/html/images/");
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        
-        Path path = Paths.get("/var/www/html/images/"+ newFileName);
-        String ruta= path.toString();
-        
-        Files.write(path, bytes);
+       
+//        String fileName = UUID.randomUUID().toString();
+//        byte [] bytes = file.getBytes();
+//        
+//        String fileOriginalName = file.getOriginalFilename();
+//        String fileExtension = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
+//        
+//        String newFileName= fileName + fileExtension;
+//        
+//        File folder = new File("/var/www/html/images/");
+//        if (!folder.exists()) {
+//            folder.mkdirs();
+//        }
+//        
+//        Path path = Paths.get("/var/www/html/images/"+ newFileName);
+//        String ruta= path.toString();
+//        
+//        Files.write(path, bytes);
         
         
         Imagen imagen = new Imagen();
