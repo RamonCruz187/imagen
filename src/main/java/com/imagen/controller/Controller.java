@@ -14,11 +14,15 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,6 +108,18 @@ public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
 @GetMapping ("/ver")
 public List <Imagen> verImagenes(){
     return imaIServ.verImagenes();
+}
+
+@GetMapping("/imagen/{nombre}")
+public ResponseEntity<ByteArrayResource> obtenerImagen(@PathVariable String nombre) throws IOException {
+    // Lógica para obtener la imagen de la carpeta app/images
+    // ...
+    // Devuelve la imagen como un recurso ResponseEntity
+    Path rutaImagen = Paths.get("app/images/" + nombre);
+byte[] imagenBytes = Files.readAllBytes(rutaImagen);
+    return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(new ByteArrayResource(imagenBytes));
 }
 
 }
