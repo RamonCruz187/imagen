@@ -115,7 +115,7 @@ public ResponseEntity<ByteArrayResource> obtenerImagen(@PathVariable String nomb
     // Lógica para obtener la imagen de la carpeta app/images
     // ...
     // Devuelve la imagen como un recurso ResponseEntity
-    Path rutaImagen = Paths.get("app/images/" + nombre);
+    Path rutaImagen = Paths.get("images/" + nombre);
 byte[] imagenBytes = Files.readAllBytes(rutaImagen);
     return ResponseEntity.ok()
             .contentType(MediaType.IMAGE_JPEG)
