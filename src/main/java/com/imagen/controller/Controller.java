@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.imagen.controller;
 
 import com.imagen.entity.Imagen;
@@ -29,97 +25,67 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-
-
 public class Controller {
-    
+
     @Value("${image.storage.path}")
     private String storagePath;
-    
+
     @Autowired
     private imagenIServ imaIServ;
-    
+
     @PostMapping("/upload")
-public ResponseEntity <String> uploadImage( @RequestParam("id") Long id,
-        @RequestParam("file") MultipartFile file) {
-    // Aquí puedes realizar validaciones o procesamientos adicionales antes de guardar el archivo
-    
-    
-    try {
-        String fileName = file.getOriginalFilename();
-        Path imagePath = Paths.get(storagePath + fileName);
-        String ruta = imagePath.toString();
-        
-        File folder = new File("images/");
-        if (!folder.exists()) {
-            folder.mkdirs();
-       }
-        
-        Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-        
-        
-        
-//        // Obtén el nombre del archivo
-//            String fileName = file.getOriginalFilename();
-//            
-//            // Define la ruta de destino para guardar la imagen
-//            Path destination = Path.of("C:/java/" + fileName);
-//            String ruta = destination.toString();
-//            
-//            // Guarda la imagen en el sistema de archivos
-//            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-//        
-       
+    public ResponseEntity<String> uploadImage(
+            @RequestParam("file") MultipartFile file) {
+
+        try {
+            
+            String fileName = file.getOriginalFilename();
+            Path imagePath = Paths.get(storagePath + fileName);
+            
+            String ruta = "http://191.96.251.43/prueba/"+fileName;
+
+            File folder = new File("images/");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+
 //        String fileName = UUID.randomUUID().toString();
-//        byte [] bytes = file.getBytes();
 //        
 //        String fileOriginalName = file.getOriginalFilename();
 //        String fileExtension = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
 //        
 //        String newFileName= fileName + fileExtension;
 //        
-//        File folder = new File("/var/www/html/images/");
-//        if (!folder.exists()) {
-//            folder.mkdirs();
-//        }
-//        
 //        Path path = Paths.get("/var/www/html/images/"+ newFileName);
 //        String ruta= path.toString();
-//        
-//        Files.write(path, bytes);
-        
-        
-        Imagen imagen = new Imagen();
-        imagen.setId(id);
-        imagen.setNombre(ruta);
-        imaIServ.nuevaImagen(imagen);
-        
-        
-        // Guarda la información del archivo en la base de datos
-        // Aquí deberás utilizar tu lógica para guardar los datos en tu base de datos MySQL
-        
-        return ResponseEntity.ok("Archivo guardado exitosamente");
-    } catch (IOException e) {
-       
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el archivo");
+            Imagen imagen = new Imagen();
+            imagen.setNombre(ruta);
+            imaIServ.nuevaImagen(imagen);
+
+            return ResponseEntity.ok("Archivo guardado exitosamente");
+        } catch (IOException e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el archivo");
+        }
     }
-}
 
-@GetMapping ("/ver")
-public List <Imagen> verImagenes(){
-    return imaIServ.verImagenes();
-}
+    @GetMapping("/ver")
+    public List<Imagen> verImagenes() {
+        return imaIServ.verImagenes();
+    }
 
-@GetMapping("/imagen/{nombre}")
-public ResponseEntity<ByteArrayResource> obtenerImagen(@PathVariable String nombre) throws IOException {
-    // Lógica para obtener la imagen de la carpeta app/images
-    // ...
-    // Devuelve la imagen como un recurso ResponseEntity
-    Path rutaImagen = Paths.get("images/" + nombre);
-byte[] imagenBytes = Files.readAllBytes(rutaImagen);
-    return ResponseEntity.ok()
-            .contentType(MediaType.IMAGE_JPEG)
-            .body(new ByteArrayResource(imagenBytes));
-}
+    @GetMapping("/imagen/{nombre}")
+    public ResponseEntity<ByteArrayResource> obtenerImagen(@PathVariable String nombre) throws IOException {
+        // Lógica para obtener la imagen de la carpeta app/images
+        // ...
+        // Devuelve la imagen como un recurso ResponseEntity
+        Path rutaImagen = Paths.get("images/" + nombre);
+        byte[] imagenBytes = Files.readAllBytes(rutaImagen);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(new ByteArrayResource(imagenBytes));
+    }
 
 }
