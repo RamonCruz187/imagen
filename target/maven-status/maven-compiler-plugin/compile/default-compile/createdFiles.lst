@@ -1,4 +1,5 @@
 com\imagen\entity\Imagen.class
+com\imagen\WebConfig.class
 com\imagen\service\ImagenServ.class
 com\imagen\controller\Controller.class
 com\imagen\ImagenApplication.class
